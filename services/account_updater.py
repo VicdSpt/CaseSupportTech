@@ -119,7 +119,8 @@ class AccountUpdater:
                 "website": infos["website"] if infos["website"] is not False else None,
                 "is_company": infos["is_company"],
                 # title is a many2one field: Odoo returns it as [id, display_name]
-                "job_title": infos["title"][1] if infos["title"] else None,
+                # "job_title": infos["title"][1] if infos["title"] else None,
+                "job_title": None,
                 "created_at": datetime.now(),
                 "updated_at": datetime.now()
             }
