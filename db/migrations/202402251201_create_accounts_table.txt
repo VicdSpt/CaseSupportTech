@@ -1,0 +1,12 @@
+CREATE TABLE IF NOT EXISTS accounts(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `db` VARCHAR(30) NOT NULL,
+    `url` VARCHAR(255) NOT NULL,
+    `login` VARCHAR(255) NOT NULL,
+    `credentials` VARCHAR(255) CHARACTER SET ascii NOT NULL,
+    `external_id` VARCHAR(255) NOT NULL,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    INDEX(`external_id`)
+);

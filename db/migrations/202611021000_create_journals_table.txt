@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS journals(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `db` VARCHAR(30) NOT NULL,
+    `journal_id` INT(11) NOT NULL,
+    `name` VARCHAR(255) NOT NULL,
+    `code` VARCHAR(16) NOT NULL,
+    `type` VARCHAR(20) NOT NULL,
+    `currency` VARCHAR(10) DEFAULT NULL,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT unique_journal_id_per_db UNIQUE (`db`, `journal_id`)
+);

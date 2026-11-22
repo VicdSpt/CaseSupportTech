@@ -1,0 +1,20 @@
+CREATE TABLE IF NOT EXISTS journal_entry_lines(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `journal_entry_id` INT(11) NOT NULL,
+    `line_id` INT(11) NOT NULL,
+    `account_code` VARCHAR(64) DEFAULT NULL,
+    `account_name` VARCHAR(255) DEFAULT NULL,
+    `label` TEXT DEFAULT NULL,
+    `partner_odoo_id` INT(11) DEFAULT NULL,
+    `debit` DECIMAL(20, 4) NOT NULL DEFAULT 0,
+    `credit` DECIMAL(20, 4) NOT NULL DEFAULT 0,
+    `balance` DECIMAL(20, 4) NOT NULL DEFAULT 0,
+    `amount_currency` DECIMAL(20, 4) NOT NULL DEFAULT 0,
+    `currency` VARCHAR(10) DEFAULT NULL,
+    `date` DATE NOT NULL,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT unique_line_id_per_entry UNIQUE (`journal_entry_id`, `line_id`),
+    CONSTRAINT `journal_entry_lines_ibfk_1` FOREIGN KEY (`journal_entry_id`) REFERENCES `journal_entries` (`id`) ON DELETE CASCADE
+);

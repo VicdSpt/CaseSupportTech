@@ -1,0 +1,13 @@
+CREATE TABLE IF NOT EXISTS contacts(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `db` VARCHAR(30) NOT NULL,
+    `contact_id` INT(11) NOT NULL,
+    `type` VARCHAR(10) NOT NULL,
+    `email` VARCHAR(255) DEFAULT NULL,
+    `website` VARCHAR(255) DEFAULT NULL,
+    `job_title` VARCHAR(255) DEFAULT NULL,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT unique_contact_id_per_db UNIQUE (`db`, `contact_id`)
+);

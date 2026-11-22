@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS accounts_contacts(
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `account_id` INT(11) NOT NULL,
+    `contact_id` INT(11) NOT NULL,
+    `created_at` datetime NOT NULL,
+    `updated_at` datetime NOT NULL,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `accounts_contacts_ibfk_1` FOREIGN KEY (`account_id`) REFERENCES `accounts` (`id`),
+    CONSTRAINT `accounts_contacts_ibfk_2` FOREIGN KEY (`contact_id`) REFERENCES `contacts` (`id`)
+);

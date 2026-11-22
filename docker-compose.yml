@@ -1,0 +1,18 @@
+services:
+  db:
+    # Pinned to the version the case was built and tested with
+    image: mysql:26.10.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'chift_odoo_integration'
+      # Password for root access
+      MYSQL_ROOT_PASSWORD: 'root'
+    ports:
+      # <Port exposed> : <MySQL Port running inside container>
+      - '3308:3306'
+    expose:
+      # Opens port 3306 on the container
+      - '3306'
+    volumes:
+      # Where our data will be persisted
+      - ./cache/mysql:/var/lib/mysql
