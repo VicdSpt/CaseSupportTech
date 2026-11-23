@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from models.accounts import get_account_from_id, get_all_account_ids
+from models.accounts import get_account_from_id, get_all_account_ids, set_last_sync_started, set_success_update, set_fail_update
 from models.accounts_contacts import (
     delete_lost_contacts_for_accounts,
     upsert_accounts_contacts_connections,
@@ -13,6 +13,21 @@ from models.accounts_journals import (
 from models.journals import upsert_journals
 from services.journal_entry_sync import JournalEntrySync
 from services.odoo_client import OdooClient
+
+import xmlrpc.client
+
+# TECH CASE
+# traduit une erreur de sync en message court et sûr pour le client (sans détails internes)
+
+def get_safe_error_message(e: Exception) -> str:
+    if isinstance(e, PermissionError):
+        return "Odoo authentication failed for the provided credentials"
+    elif isinstance(e, xmlrpc.client.Fault):
+        return "Odoo rejected the request. Please contact support."
+    elif isinstance(e, OSError):
+        return "Could not reach the Odoo instance. Please check the URL."
+    else:
+        return "An internal error occurred during the sync. Our team has been notified."
 
 
 class AccountUpdater:
@@ -30,6 +45,8 @@ class AccountUpdater:
             except Exception as e:
                 # One broken account must not prevent the others from being updated.
                 print(f"account with id={id} could not be updated: {e!r}")
+                # CASE - une étape a échoué : on enregistre l'échec avec le message d'erreur
+                set_fail_update(id, error_message=get_safe_error_message(e))
         print("all accounts have been udpated")
 
     @classmethod
@@ -40,11 +57,14 @@ class AccountUpdater:
         id -- internal id of the account to update
         """
         # Step 1: Fetch the data using the odoo client
-        account = get_account_from_id(id)
+        account = get_account_from_id(id) 
+
         if account is None:
             # We asked to update an account that do not exist, so we cannot do anything
             print(f"The provided account with id={id} do not exist. Cannot update anything.")
             return None
+        
+        set_last_sync_started(id)
         odoo_client = OdooClient(account["url"], account["login"], account["credentials"], account["db"])
         contact_infos = odoo_client.fetch_all_contacts()
         # Step 2: Format the data if needed
@@ -68,6 +88,8 @@ class AccountUpdater:
         upsert_accounts_journals_connections(id, upserted_journal_ids)
         # Step 5: sync the journal entries (needs the journals of step 4)
         synced_entries, changed_entries, deleted_entries = JournalEntrySync.sync_account(id, account["db"], odoo_client)
+        # CASE - toutes les étapes ont réussi : on enregistre le succès
+        set_success_update(id)
         print(f"account with id={id} properly updated ({synced_entries} journal entries in odoo, "
               f"{changed_entries} inserted or updated, {deleted_entries} deleted)")
 
@@ -120,6 +142,7 @@ class AccountUpdater:
                 "is_company": infos["is_company"],
                 # title is a many2one field: Odoo returns it as [id, display_name]
                 # "job_title": infos["title"][1] if infos["title"] else None,
+                # issue with odoo v20 for the demo
                 "job_title": None,
                 "created_at": datetime.now(),
                 "updated_at": datetime.now()
@@ -127,3 +150,4 @@ class AccountUpdater:
             contact_db_ids.append(infos["id"])
             formated_contacts.append(formated_contact)
         return formated_contacts, contact_db_ids
+
