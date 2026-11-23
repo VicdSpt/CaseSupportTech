@@ -135,6 +135,7 @@ def __upsert_account(
         conn.cursor().execute(sql)
 
 
+# TECH CASE
 # Marque le début d'une synchronisation pour un compte donné
 # Met à jour en base de données :
 # - `last_sync_status` = "running"
@@ -152,6 +153,7 @@ def set_last_sync_started(id: int) -> None:
     with open_connection() as conn:
         conn.cursor().execute(sql, ["running", now, id])
 
+# TECH CASE
 # Marque la fin réussie d'une synchronisation pour un compte donné
 # Met à jour en base de données :
 # - `last_sync_status` = "success"
@@ -171,6 +173,7 @@ def set_success_update(id: int) -> None:
     with open_connection() as conn:
         conn.cursor().execute(sql, [now, now, id])
 
+# TECH CASE
 # Marque l'échec d'une synchronisation pour un compte donné
 # Met à jour en base de données :
 # - `last_sync_status` = "failed"

@@ -2,6 +2,8 @@ import ssl
 import xmlrpc.client
 
 CONTACT_MODEL = 'res.partner'
+# CONTACT_FIELDS = ['website', 'email', 'is_company', 'title']
+# issue with odoo V20 for the demo
 CONTACT_FIELDS = ['website', 'email', 'is_company']
 JOURNAL_MODEL = 'account.journal'
 JOURNAL_FIELDS = ['name', 'code', 'type', 'currency_id', 'company_id', 'active']
