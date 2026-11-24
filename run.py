@@ -241,7 +241,7 @@ def get_journal_entry_by_entry_id(external_id: str, entry_id: int):
         )
     return {"journal_entry": journal_entry}
 
-
+# TECH CASE
 @app.get(
     "/{external_id}/status",
     responses={400: {"description": "The provided account do not exist."}},

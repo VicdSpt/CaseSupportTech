@@ -141,8 +141,6 @@ def __upsert_account(
 # - `last_sync_status` = "running"
 # -`last_sync_started_at` = timestamp actuel
 # id: L'ID unique du compte à synchroniser.
-
-
 def set_last_sync_started(id: int) -> None:
     now = datetime.now()
     sql = """
@@ -163,8 +161,6 @@ def set_last_sync_started(id: int) -> None:
 # - `last_sync_successful_at` = timestamp actuel
 # - `last_sync_error` = NULL (efface l'erreur d'une éventuelle sync précédente échouée)
 # id: L'ID unique du compte synchronisé.
-
-
 def set_success_update(id: int) -> None:
     now = datetime.now()
     sql = """
@@ -187,8 +183,6 @@ def set_success_update(id: int) -> None:
 # pour que le client sache de quand datent ses données.
 # id: L'ID unique du compte synchronisé.
 # error_message: Le message d'erreur à afficher au client
-
-
 def set_fail_update(id: int, error_message: str) -> None:
     now = datetime.now()
     sql = """
@@ -201,6 +195,16 @@ def set_fail_update(id: int, error_message: str) -> None:
 
 
 # TECH CASE
+# Compte les données synchronisées visibles pour un compte donné (utilisé par l'endpoint /status)
+# Renvoie un dictionnaire prêt pour la réponse JSON :
+# - "contacts" : nombre de contacts liés au compte (table accounts_contacts)
+# - "journals" : nombre de journaux liés au compte (table accounts_journals)
+# - "journal_entries" : nombre d'écritures des journaux visibles par le compte
+#   (pas de colonne account_id dans journal_entries : on passe par le journal avec des JOIN)
+# Les trois requêtes partagent une seule connexion.
+# Compter en base (plutôt que stocker les nombres pendant la sync) donne toujours
+# ce que le client peut réellement lire, même si la dernière sync a échoué.
+# account_id: L'ID interne du compte.
 def get_counts_for_account_id(account_id: int) -> dict:
     with open_connection() as conn:
         cursor = conn.cursor(dictionary=True)

@@ -45,8 +45,10 @@ class AccountUpdater:
             except Exception as e:
                 # One broken account must not prevent the others from being updated.
                 print(f"account with id={id} could not be updated: {e!r}")
+
                 # CASE - une étape a échoué : on enregistre l'échec avec le message d'erreur
                 set_fail_update(id, error_message=get_safe_error_message(e))
+
         print("all accounts have been udpated")
 
     @classmethod
@@ -64,7 +66,9 @@ class AccountUpdater:
             print(f"The provided account with id={id} do not exist. Cannot update anything.")
             return None
         
+        # CASE
         set_last_sync_started(id)
+        
         odoo_client = OdooClient(account["url"], account["login"], account["credentials"], account["db"])
         contact_infos = odoo_client.fetch_all_contacts()
         # Step 2: Format the data if needed
@@ -88,8 +92,10 @@ class AccountUpdater:
         upsert_accounts_journals_connections(id, upserted_journal_ids)
         # Step 5: sync the journal entries (needs the journals of step 4)
         synced_entries, changed_entries, deleted_entries = JournalEntrySync.sync_account(id, account["db"], odoo_client)
+
         # CASE - toutes les étapes ont réussi : on enregistre le succès
         set_success_update(id)
+
         print(f"account with id={id} properly updated ({synced_entries} journal entries in odoo, "
               f"{changed_entries} inserted or updated, {deleted_entries} deleted)")
 
