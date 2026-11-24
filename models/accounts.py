@@ -142,6 +142,7 @@ def __upsert_account(
 # -`last_sync_started_at` = timestamp actuel
 # id: L'ID unique du compte à synchroniser.
 
+
 def set_last_sync_started(id: int) -> None:
     now = datetime.now()
     sql = """
@@ -153,6 +154,7 @@ def set_last_sync_started(id: int) -> None:
     with open_connection() as conn:
         conn.cursor().execute(sql, ["running", now, id])
 
+
 # TECH CASE
 # Marque la fin réussie d'une synchronisation pour un compte donné
 # Met à jour en base de données :
@@ -161,6 +163,7 @@ def set_last_sync_started(id: int) -> None:
 # - `last_sync_successful_at` = timestamp actuel
 # - `last_sync_error` = NULL (efface l'erreur d'une éventuelle sync précédente échouée)
 # id: L'ID unique du compte synchronisé.
+
 
 def set_success_update(id: int) -> None:
     now = datetime.now()
@@ -173,6 +176,7 @@ def set_success_update(id: int) -> None:
     with open_connection() as conn:
         conn.cursor().execute(sql, [now, now, id])
 
+
 # TECH CASE
 # Marque l'échec d'une synchronisation pour un compte donné
 # Met à jour en base de données :
@@ -182,9 +186,10 @@ def set_success_update(id: int) -> None:
 # Ne modifie PAS `last_sync_successful_at` : on garde l'heure du dernier succès,
 # pour que le client sache de quand datent ses données.
 # id: L'ID unique du compte synchronisé.
-# error_message: Le message d'erreur à afficher au client 
+# error_message: Le message d'erreur à afficher au client
 
-def set_fail_update(id: int, error_message: str ) -> None:
+
+def set_fail_update(id: int, error_message: str) -> None:
     now = datetime.now()
     sql = """
         UPDATE accounts
@@ -193,3 +198,36 @@ def set_fail_update(id: int, error_message: str ) -> None:
     """
     with open_connection() as conn:
         conn.cursor().execute(sql, [now, error_message, id])
+
+
+# TECH CASE
+def get_counts_for_account_id(account_id: int) -> dict:
+    with open_connection() as conn:
+        cursor = conn.cursor(dictionary=True)
+
+        cursor.execute(
+            "SELECT count(*) AS total FROM accounts_contacts WHERE account_id = %s",
+            [account_id],
+        )
+        contacts = cursor.fetchone()["total"]
+
+        cursor.execute(
+            "SELECT count(*) AS total FROM accounts_journals WHERE account_id = %s",
+            [account_id],
+        )
+        journals = cursor.fetchone()["total"]
+
+        sql = """
+            SELECT count(*) AS total FROM journal_entries AS je
+            INNER JOIN journals AS j ON j.id = je.journal_id
+            INNER JOIN accounts_journals AS aj ON aj.journal_id = j.id
+            WHERE aj.account_id = %s
+        """
+        cursor.execute(sql, [account_id])
+        journal_entries = cursor.fetchone()["total"]
+
+    return {
+        "contacts": contacts,
+        "journals": journals,
+        "journal_entries": journal_entries,
+    }
