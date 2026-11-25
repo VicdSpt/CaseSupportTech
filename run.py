@@ -241,7 +241,7 @@ def get_journal_entry_by_entry_id(external_id: str, entry_id: int):
         )
     return {"journal_entry": journal_entry}
 
-# TECH CASE
+# TECH CASE permet de vérifier l'état des data d'une synchronisation (statut, dates, erreur, counts)
 @app.get(
     "/{external_id}/status",
     responses={400: {"description": "The provided account do not exist."}},
