@@ -34,6 +34,9 @@ CONTACT_FIELDS = ['website', 'email', 'is_company', 'title']
 posait un problème et faisait échouer toute les synchronisation. Le compte démo de Odoo tourne en V20 et le code a été écrit pour Odoo 18, pour résoudre ce soucis j'ai du modifier la ligne en retirant "title" => 
 CONTACT_FIELDS = ['website', 'email', 'is_company']
 
+Ce qui a été fait pour résoudre ce souci est ajouté 'function' à CONTACT_FIELDS et la ligne ""job_title": infos["function"] if infos["function"] is not False else None" dans services/account_updater.py
+
+
 Un fois ce souci résolu, j'ai créé le fichier .txt dans migration (202611230000_add_sync_status_accounts) pour ajouter des informations à la table "Accounts":
 ALTER TABLE accounts 
 ADD COLUMN `last_sync_status` VARCHAR(50) NULL,
@@ -98,3 +101,10 @@ Juste retirer "title" de CONTACT_FIELDS
 
 ## Cas 5 : external_id inconnu
 -> changer le external_id dans le swagger
+
+---
+
+Avec plus de temps:
+- Features 2 et 3 pour comprendre comment elles fonctionnent seules et toutes ensemble.
+- Une nouvelle ligne dans l'affichage du swagger pour le GET STATUS quand c'est success pour avoir un message qui
+confirme bien que tout est en ordre au niveau des counts
