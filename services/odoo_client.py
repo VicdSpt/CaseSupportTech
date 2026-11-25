@@ -4,7 +4,7 @@ import xmlrpc.client
 CONTACT_MODEL = 'res.partner'
 # CONTACT_FIELDS = ['website', 'email', 'is_company', 'title']
 # issue with odoo V20 for the demo
-CONTACT_FIELDS = ['website', 'email', 'is_company']
+CONTACT_FIELDS = ['website', 'email', 'is_company', 'function']
 JOURNAL_MODEL = 'account.journal'
 JOURNAL_FIELDS = ['name', 'code', 'type', 'currency_id', 'company_id', 'active']
 JOURNAL_ENTRY_MODEL = 'account.move'

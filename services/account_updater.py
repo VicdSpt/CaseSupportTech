@@ -149,7 +149,7 @@ class AccountUpdater:
                 # title is a many2one field: Odoo returns it as [id, display_name]
                 # "job_title": infos["title"][1] if infos["title"] else None,
                 # issue with odoo v20 for the demo
-                "job_title": None,
+                "job_title": infos["function"] if infos["function"] is not False else None,
                 "created_at": datetime.now(),
                 "updated_at": datetime.now()
             }
