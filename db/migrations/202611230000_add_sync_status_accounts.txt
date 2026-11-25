@@ -1,0 +1,6 @@
+ALTER TABLE accounts 
+ADD COLUMN `last_sync_status` VARCHAR(50) NULL,
+ADD COLUMN `last_sync_started_at` datetime NULL,
+ADD COLUMN `last_sync_finished_at` datetime NULL,
+ADD COLUMN `last_sync_successful_at` datetime NULL,
+ADD COLUMN `last_sync_error` VARCHAR(250) NULL
