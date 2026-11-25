@@ -136,10 +136,10 @@ def __upsert_account(
 
 
 # TECH CASE
-# Marque le début d'une synchronisation pour un compte donné
+# Marque le début d'une synchronisation pour un compte
 # Met à jour en base de données :
 # - `last_sync_status` = "running"
-# -`last_sync_started_at` = timestamp actuel
+# - `last_sync_started_at` = timestamp actuel
 # id: L'ID unique du compte à synchroniser.
 def set_last_sync_started(id: int) -> None:
     now = datetime.now()
@@ -154,7 +154,7 @@ def set_last_sync_started(id: int) -> None:
 
 
 # TECH CASE
-# Marque la fin réussie d'une synchronisation pour un compte donné
+# Marque la fin réussie d'une synchronisation pour un compte
 # Met à jour en base de données :
 # - `last_sync_status` = "success"
 # - `last_sync_finished_at` = timestamp actuel
@@ -174,7 +174,7 @@ def set_success_update(id: int) -> None:
 
 
 # TECH CASE
-# Marque l'échec d'une synchronisation pour un compte donné
+# Marque l'échec d'une synchronisation pour un compte
 # Met à jour en base de données :
 # - `last_sync_status` = "failed"
 # - `last_sync_finished_at` = timestamp actuel
@@ -222,10 +222,10 @@ def get_counts_for_account_id(account_id: int) -> dict:
         journals = cursor.fetchone()["total"]
 
         sql = """
-            SELECT count(*) AS total FROM journal_entries AS je
-            INNER JOIN journals AS j ON j.id = je.journal_id
-            INNER JOIN accounts_journals AS aj ON aj.journal_id = j.id
-            WHERE aj.account_id = %s
+            SELECT count(*) AS total
+            FROM journal_entries
+            INNER JOIN accounts_journals ON accounts_journals.journal_id = journal_entries.journal_id
+            WHERE accounts_journals.account_id = %s
         """
         cursor.execute(sql, [account_id])
         journal_entries = cursor.fetchone()["total"]
