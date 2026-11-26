@@ -141,7 +141,7 @@ def __upsert_account(
 # - `last_sync_status` = "running"
 # - `last_sync_started_at` = timestamp actuel
 # id: L'ID unique du compte à synchroniser.
-def set_last_sync_started(id: int) -> None:
+def get_last_sync_started(id: int) -> None:
     now = datetime.now()
     sql = """
         UPDATE accounts
@@ -161,7 +161,7 @@ def set_last_sync_started(id: int) -> None:
 # - `last_sync_successful_at` = timestamp actuel
 # - `last_sync_error` = NULL (efface l'erreur d'une éventuelle sync précédente échouée)
 # id: L'ID unique du compte synchronisé.
-def set_success_update(id: int) -> None:
+def get_success_update(id: int) -> None:
     now = datetime.now()
     sql = """
             UPDATE accounts
@@ -183,7 +183,7 @@ def set_success_update(id: int) -> None:
 # pour que le client sache de quand datent ses données.
 # id: L'ID unique du compte synchronisé.
 # error_message: Le message d'erreur à afficher au client
-def set_fail_update(id: int, error_message: str) -> None:
+def get_fail_update(id: int, error_message: str) -> None:
     now = datetime.now()
     sql = """
         UPDATE accounts
