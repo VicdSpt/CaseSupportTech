@@ -106,5 +106,4 @@ Juste retirer "title" de CONTACT_FIELDS
 
 Avec plus de temps:
 - Features 2 et 3 pour comprendre comment elles fonctionnent seules et toutes ensemble.
-- Une nouvelle ligne dans l'affichage du swagger pour le GET STATUS quand c'est success pour avoir un message qui
-confirme bien que tout est en ordre au niveau des counts
+- Une nouvelle ligne dans l'affichage du swagger pour le GET STATUS quand c'est success pour avoir un message qui confirme bien que tout est en ordre au niveau des counts

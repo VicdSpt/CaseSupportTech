@@ -3,9 +3,9 @@ from datetime import datetime
 from models.accounts import (
     get_account_from_id,
     get_all_account_ids,
-    set_last_sync_started,
-    set_success_update,
-    set_fail_update,
+    get_last_sync_started,
+    get_success_update,
+    get_fail_update,
 )
 from models.accounts_contacts import (
     delete_lost_contacts_for_accounts,
@@ -54,7 +54,7 @@ class AccountUpdater:
                 print(f"account with id={id} could not be updated: {e!r}")
 
                 # TECH CASE - une étape a échoué : on enregistre l'échec avec le message d'erreur
-                set_fail_update(id, error_message=get_safe_error_message(e))
+                get_fail_update(id, error_message=get_safe_error_message(e))
 
         print("all accounts have been udpated")
 
@@ -76,7 +76,7 @@ class AccountUpdater:
             return None
 
         # TECH CASE début de la sync -> statut "running" + heure du début de celle-ci
-        set_last_sync_started(id)
+        get_last_sync_started(id)
 
         odoo_client = OdooClient(
             account["url"], account["login"], account["credentials"], account["db"]
@@ -115,7 +115,7 @@ class AccountUpdater:
         )
 
         # TECH CASE - toutes les étapes ont réussi : on enregistre le succès
-        set_success_update(id)
+        get_success_update(id)
 
         print(
             f"account with id={id} properly updated ({synced_entries} journal entries in odoo, "
